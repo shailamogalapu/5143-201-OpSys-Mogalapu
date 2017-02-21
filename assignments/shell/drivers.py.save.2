@@ -4,11 +4,10 @@ import sys
 import stat
 import time
 import shutil
-import subprocess
+
 
 command_history = []
 command_new=[]
-
 
 def previoushistory(file):
 	x1=[]
@@ -28,27 +27,24 @@ def previoushistory(file):
 	file1=eval(y[0])
 
 	if length==1:
-		print "in if"
-	#	file1=getattr(y[0])
 		t=threading.Thread(target=file1)
 		t.start()
 		t.join()
 	elif length==2:
-		file2=y[1]
-		print file2
+		file2=eval(y[1])
 		t=threading.Thread(target=file1,args=(file2,))
 		t.start()
 		t.join()
 	elif length==3:
-		file2=y[1]
-		file3=y[2] 
+		file2=eval(y[1])
+		file3=eval(y[2]) 
 		t=threading.Thread(target=file1,args=(file2,file1,))
                 t.start()
                 t.join()
 	elif length==4:
-		file2=y[1]
-                file3=y[2]
-		file4=y[3]
+		file2=eval(y[1])
+                file3=eval(y[2])
+		file4=eval(y[3])
 		t.threading.Thread(target=file1,args=(file2,file3,file4,))
 		t.start()
 		t.join()
@@ -132,9 +128,12 @@ def cat1(filename1,filename2,filedest):
      else:
 		print("file doesnt exist")
 def redirect(file):
+	print(sys.stdout)
         original = sys.stdout
         sys.stdout = open(file, 'w')
-
+        print('original')
+        print(file)
+        sys.stdout = original
 def chmod(_flag1,_flag2):
 	permission=int(_flag1,8)
         print permission
@@ -307,21 +306,10 @@ if __name__=="__main__":
 		     c.start()
 		     c.join()
 	  elif x[0]=='!':
-		    # print parts[0]
+		     print parts[0]
 		     c=threading.Thread(target=previoushistory,args=(parts[0],))
 		     c.start()
 		     c.join()
-	  elif parts[1]=='>':
-                    # print parts[0]
-		     output=subprocess.check_output(parts[0],parts[2])
-		     print output
-		     c=threading.Thread(target=parts[0])
-                     c.start()
-                     c.join()
-                     c=threading.Thread(target=redirect,args=(parts[2],))
-                     c.start()
-                     c.join()
-
 	  elif parts[0]=='less':
                      c=threading.Thread(target=less,args=(parts[1],))
                      c.start()
@@ -375,7 +363,6 @@ if __name__=="__main__":
 		 c=threading.Thread(target=cat1,args=(file1,file2,file3,))
 		 c.start()
 		 c.join()
-	  
           elif parts[0] == 'chmod':
 			flag1 = parts[1]
 			flag2 = parts[2]

@@ -4,58 +4,10 @@ import sys
 import stat
 import time
 import shutil
-import subprocess
+
 
 command_history = []
-command_new=[]
 
-
-def previoushistory(file):
-	x1=[]
-	y=[]
-	x1=list(file)
-	del x1[0]
-	files=''.join(x1)
-	l=len(command_history)
-	for i in range(l):
-		if (command_new[i]==files):
-			index=i
-	cmd1 = command_history[index]
-	print cmd1
-	y=cmd1.split(" ")
-	print y[0]
-	length= len(y)
-	file1=eval(y[0])
-
-	if length==1:
-		print "in if"
-	#	file1=getattr(y[0])
-		t=threading.Thread(target=file1)
-		t.start()
-		t.join()
-	elif length==2:
-		file2=y[1]
-		print file2
-		t=threading.Thread(target=file1,args=(file2,))
-		t.start()
-		t.join()
-	elif length==3:
-		file2=y[1]
-		file3=y[2] 
-		t=threading.Thread(target=file1,args=(file2,file1,))
-                t.start()
-                t.join()
-	elif length==4:
-		file2=y[1]
-                file3=y[2]
-		file4=y[3]
-		t.threading.Thread(target=file1,args=(file2,file3,file4,))
-		t.start()
-		t.join()
-#	c=threading.Thread(target=
-	
-	#	else:
-	#		print "didnot find"
 def less(filename):
 	if os.path.exists(filename):                                           
 		f = open(filename, "r")
@@ -132,15 +84,19 @@ def cat1(filename1,filename2,filedest):
      else:
 		print("file doesnt exist")
 def redirect(file):
+	print(sys.stdout)
         original = sys.stdout
         sys.stdout = open(file, 'w')
-
+        print('original')
+        print(file)
+        sys.stdout = original
 def chmod(_flag1,_flag2):
 	permission=int(_flag1,8)
         print permission
         os.chmod(_flag2,permission)
         print("changed permission of")
         print(_flag2)
+        print("permission")
 def mv(filename1,filename2):
 	 if(os.path.isfile(filename1)):
 		cp(filename1,filename2)
@@ -272,14 +228,13 @@ def pwd():
 
 if __name__=="__main__":
 	number_commands = 0
+#	history1=historyManager()
 	while True:
           parts = []
-	  x=[]
 	  cmd = raw_input("parser-$" )
+#	  history1.push_command(cmd) 
 	  parts=cmd.split(" ")
-	  command_history.append(cmd)
-	  command_new.append(parts[0])
-	  x=list(parts[0])
+	 # history1.push_command(parts[0])
 	  if parts[0]=='rm':
                 if(len(parts)==1) | (len(parts)>2):
                   print("invalid rm command")
@@ -306,22 +261,6 @@ if __name__=="__main__":
 		     c=threading.Thread(target=grep,args=(parts[2],parts[1],))
 		     c.start()
 		     c.join()
-	  elif x[0]=='!':
-		    # print parts[0]
-		     c=threading.Thread(target=previoushistory,args=(parts[0],))
-		     c.start()
-		     c.join()
-	  elif parts[1]=='>':
-                    # print parts[0]
-		     output=subprocess.check_output(parts[0],parts[2])
-		     print output
-		     c=threading.Thread(target=parts[0])
-                     c.start()
-                     c.join()
-                     c=threading.Thread(target=redirect,args=(parts[2],))
-                     c.start()
-                     c.join()
-
 	  elif parts[0]=='less':
                      c=threading.Thread(target=less,args=(parts[1],))
                      c.start()
@@ -375,7 +314,6 @@ if __name__=="__main__":
 		 c=threading.Thread(target=cat1,args=(file1,file2,file3,))
 		 c.start()
 		 c.join()
-	  
           elif parts[0] == 'chmod':
 			flag1 = parts[1]
 			flag2 = parts[2]
